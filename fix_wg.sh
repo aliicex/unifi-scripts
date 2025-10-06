@@ -16,7 +16,7 @@ add_iptables_rule() {
 
     if ! iptables -t "$table" -A "$chain" "$direction" "$WG_INTERFACE" \
         -p tcp -m tcp --tcp-flags "$TCP_FLAGS" -j TCPMSS --clamp-mss-to-pmtu 2>/dev/null; then
-        
+
         iptables -t "$table" -A "$chain" "$direction" "$WG_INTERFACE" \
             -p tcp -m tcp --tcp-flags "$TCP_FLAGS" -j TCPMSS --clamp-mss-to-pmtu
     fi
@@ -26,3 +26,14 @@ add_iptables_rule() {
 add_iptables_rule "mangle" "UBIOS_FORWARD_TCPMSS" "-o"
 add_iptables_rule "mangle" "UBIOS_FORWARD_TCPMSS" "-i"
 add_iptables_rule "mangle" "UBIOS_OUTPUT_TCPMSS" "-o"
+
+# Checks
+# iptables -t mangle -nvL UBIOS_FORWARD_TCPMSS
+# iptables -t mangle -nvL UBIOS_OUTPUT_TCPMSS
+#
+# View all rules in the mangle table with
+# iptables -t mangle -S
+#
+# To remove a line
+# iptables -t mangle -D UBIOS_FORWARD_TCPMSS 1
+# Where he number at the end (1, 2, etc) corresponds to the line you want to delete AS they appear.
