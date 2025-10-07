@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Configure DNS redirection rules for UnifiOS with ctrld support
 # This script modifies firewall rules to hijack DNS traffic and send to ctrld
@@ -18,7 +18,6 @@ insert_pbr_dns_rules() {
 
     # Find the line number for the RETURN rule
     local return_rule="-p $proto -m set --match-set $CLIENT_SET src -m set --match-set $LOCAL_NET_SET dst -m $proto --dport $dport -j RETURN"
-    local dnat_rule="-p $proto -m set --match-set $CLIENT_SET src -m set --match-set $LOCAL_NET_SET dst -m $proto --dport $dport -j DNAT --to-destination $CTRLD_IP:$CTRLD_PORT"
 
     # Check if DNAT rule already exists
     if ! iptables -t "$TABLE" -C "$CHAIN" -p "$proto" -m set --match-set "$CLIENT_SET" src -m set --match-set "$LOCAL_NET_SET" dst -m "$proto" --dport "$dport" -j DNAT --to-destination "$CTRLD_IP:$CTRLD_PORT" 2>/dev/null; then
